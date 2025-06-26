@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Alertes envoyées</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 p-6">
+  <h2 class="text-3xl font-bold text-green-700 mb-6">📨 Alertes envoyées</h2>
+
+  <table class="min-w-full bg-white border border-green-200 rounded shadow">
+    <thead class="bg-green-100 text-green-700">
+      <tr>
+        <th class="p-3 text-left">Date</th>
+        <th class="p-3 text-left">Heure</th>
+        <th class="p-3 text-left">Nom</th>
+        <th class="p-3 text-left">Canal</th>
+        <th class="p-3 text-left">GPS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alerte in alertes %}
+      <tr class="border-t border-green-200 hover:bg-green-50">
+        <td class="p-3">{{ alerte.date }}</td>
+        <td class="p-3">{{ alerte.heure }}</td>
+        <td class="p-3">{{ alerte.nom }}</td>
+        <td class="p-3 capitalize">{{ alerte.canal }}</td>
+        <td class="p-3">
+          <a href="https://www.google.com/maps?q={{ alerte.latitude }},{{ alerte.longitude }}" target="_blank"
+            class="text-green-700 underline">Voir</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" class="p-4 text-center text-gray-500">Aucune alerte enregistrée</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

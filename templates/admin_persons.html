@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des personnes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 p-4">
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-bold text-green-700 mb-4">👥 Personnes enregistrées</h2>
+
+    <table class="w-full text-sm text-left border border-green-100">
+      <thead class="bg-green-100 text-green-800">
+        <tr>
+          <th class="p-2">Nom</th>
+          <th class="p-2">Contact</th>
+          <th class="p-2">Alerte</th>
+          <th class="p-2">QR Code</th>
+          <th class="p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-green-100">
+        {% for p in personnes %}
+        <tr>
+          <td class="p-2">{{ p.nom }}</td>
+          <td class="p-2">{{ p.contact }}</td>
+          <td class="p-2">{{ p.canal_alerte }}</td>
+          <td class="p-2"><img src="{{ url_for('static', filename='qrcodes/' + p.uuid + '.png') }}" alt="QR Code" class="w-16 h-16 mx-auto" /></td>
+         <td class="p-2 flex flex-col gap-2">
+
+  <!-- Bouton Modifier -->
+  <a href="{{ url_for('modifier_personne', uuid=p.uuid) }}"
+     class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 text-center">
+    ✏️ Modifier
+  </a>
+
+  <!-- Bouton Supprimer -->
+  <form method="POST" action="{{ url_for('supprimer_personne', uuid=p.uuid) }}"
+        onsubmit="return confirm('Supprimer {{ p.nom }} ?');">
+    <button type="submit"
+            class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 w-full">
+      🗑️ Supprimer
+    </button>
+  </form>
+
+  <!-- Bouton Télécharger QR -->
+  <a href="{{ url_for('telecharger_qr', uuid=p.uuid) }}"
+     class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-center"
+     download>
+    📥 QR Code
+  </a>
+
+</td>
+
+
+
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" class="p-2 text-center text-gray-500">Aucune personne enregistrée.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

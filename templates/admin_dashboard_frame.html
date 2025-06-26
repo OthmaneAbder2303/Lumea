@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen bg-green-50 overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-900 text-white p-6 flex flex-col h-screen">
+  <h2 class="text-2xl font-bold mb-4">Admin Lumea</h2>
+
+  <a href="{{ url_for('ajouter') }}" target="content"
+     class="hover:bg-green-600 px-3 py-2 rounded">➕ Ajouter une personne</a>
+
+  <a href="{{ url_for('alertes') }}" target="content"
+     class="hover:bg-green-600 px-3 py-2 rounded">📨 Voir les alertes</a>
+
+  <a href="{{ url_for('liste_personnes') }}" target="content"
+     class="hover:bg-green-600 px-3 py-2 rounded">👥 Liste des personnes</a>
+
+  <!-- Le lien déconnexion -->
+  <a href="{{ url_for('logout') }}" class="mt-auto text-red-200 hover:text-white underline">
+    🚪Déconnexion
+  </a>
+</div>
+    <!-- Contenu via iframe -->
+    <div class="flex-1 bg-white">
+      <iframe name="content" src="{{ url_for('ajouter') }}" class="w-full h-full border-0"></iframe>
+    </div>
+  </div>
+</body>
+</html>

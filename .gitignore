@@ -1,0 +1,22 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+# Ignorer fichiers Python temporaires
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorer environnement virtuel
+venv/
+env/
+.venv/
+
+# Ignorer fichiers IDE
+.vscode/
+.idea/
+
+# Ignorer fichiers système
+.DS_Store
+
+# Ignorer fichier d'environnement local, qui contient secrets
+.env
+

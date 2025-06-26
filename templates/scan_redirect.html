@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Localisation en cours...</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 flex items-center justify-center h-screen">
+  <div class="text-center">
+    <div class="flex justify-center mb-6">
+      <!-- Spinner animé -->
+      <svg class="animate-spin h-12 w-12 text-green-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+      </svg>
+    </div>
+    <h2 class="text-lg font-semibold text-green-700">⏳ Localisation en cours...</h2>
+    <p class="text-sm text-gray-600 mt-2">Merci de patienter pendant la redirection vers la fiche.</p>
+  </div>
+
+  <script>
+    async function sendLocation(uuid) {
+      const userAgent = navigator.userAgent;
+
+      function postData(data) {
+        return fetch(`/log_scan/${uuid}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...data, user_agent: userAgent })
+        });
+      }
+
+      function redirectToFiche() {
+        setTimeout(() => {
+          window.location.href = `/fiche/${uuid}`;
+        }, 300); // petite pause pour fluidité
+      }
+
+      function fallbackToIP() {
+        fetch('https://ipwho.is/')
+          .then(res => res.json())
+          .then(ipData => {
+            if (!ipData.success) throw new Error("IP lookup failed");
+            const data = {
+              latitude: ipData.latitude?.toFixed(6) || "0.000000",
+              longitude: ipData.longitude?.toFixed(6) || "0.000000"
+            };
+            return postData(data);
+          })
+          .then(res => {
+            if (res.ok) redirectToFiche();
+            else redirectToFiche(); // fallback même si erreur
+          })
+          .catch(() => redirectToFiche());
+      }
+
+      if (!navigator.geolocation) {
+        fallbackToIP();
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const data = {
+          latitude: position.coords.latitude.toFixed(6),
+          longitude: position.coords.longitude.toFixed(6)
+        };
+
+        try {
+          const res = await postData(data);
+          redirectToFiche(); // succès ou pas, on redirige
+        } catch {
+          redirectToFiche();
+        }
+      }, fallbackToIP);
+    }
+
+    sendLocation("{{ uuid }}");
+  </script>
+</body>
+</html>

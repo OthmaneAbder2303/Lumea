@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modifier la personne</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-lg bg-white shadow rounded p-6">
+    <h2 class="text-xl font-bold text-green-700 mb-4">✏️ Modifier : {{ p.nom }}</h2>
+    <form method="post" class="space-y-4">
+      <input name="nom" value="{{ p.nom }}" class="w-full border p-2 rounded" placeholder="Nom" />
+      <input name="infos" value="{{ p.infos }}" class="w-full border p-2 rounded" placeholder="Infos médicales/personnelles" />
+      <input name="contact" value="{{ p.contact }}" class="w-full border p-2 rounded" placeholder="Contact d'urgence" />
+      <select name="canal_alerte" class="w-full border p-2 rounded">
+        <option value="email" {% if p.canal_alerte == "email" %}selected{% endif %}>Email</option>
+        <option value="sms" {% if p.canal_alerte == "sms" %}selected{% endif %}>SMS</option>
+        <option value="whatsapp" {% if p.canal_alerte == "whatsapp" %}selected{% endif %}>WhatsApp</option>
+      </select>
+      <input name="lien" value="{{ p.lien }}" class="w-full border p-2 rounded" placeholder="Lien externe" />
+      <textarea name="texte_libre" class="w-full border p-2 rounded" placeholder="Texte libre">{{ p.texte_libre }}</textarea>
+      <button class="w-full bg-green-700 text-white py-2 rounded hover:bg-green-800">💾 Enregistrer</button>
+    </form>
+  </div>
+</body>
+</html>

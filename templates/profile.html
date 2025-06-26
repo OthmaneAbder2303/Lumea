@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fiche de {{ p.nom }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 min-h-screen flex flex-col justify-between">
+
+  <!-- Contenu principal -->
+  <div class="max-w-7xl mx-4 sm:mx-auto mt-10 bg-white rounded-2xl shadow-lg p-10 sm:mt-6">
+
+    <div class="text-center">
+      <h3 class="text-2xl font-bold text-green-700 mb-2">Fiche de {{ p.nom }}</h3>
+      <p class="text-gray-500 text-lg">Informations essentielles</p>
+    </div>
+
+    <div class="mt-8 space-y-6 text-gray-800 text-lg">
+
+      {% if p.photo %}
+      <div class="text-center my-8">
+        <img src="{{ url_for('static', filename=p.photo.split('static/')[1]) }}"
+             alt="Photo"
+             class="inline-block w-30 h-30 object-cover rounded-full border-4 border-green-300 shadow-md" />
+      </div>
+      {% endif %}
+
+      {% if p.infos %}
+      <div>
+        <span class="font-semibold text-gray-600">📝 Infos :</span>
+        <p class="ml-2">{{ p.infos }}</p>
+      </div>
+      {% endif %}
+
+      {% if p.contact %}
+      <div>
+        <span class="font-semibold text-gray-600">📞 Contact d'Urgence:</span>
+        <p class="ml-2">{{ p.contact }}</p>
+      </div>
+      {% endif %}
+
+      {% if p.texte_libre %}
+      <div>
+        <span class="font-semibold text-gray-600">💬 Note :</span>
+        <p class="ml-2">{{ p.texte_libre }}</p>
+      </div>
+      {% endif %}
+
+      {% if p.lien %}
+      <div>
+        <span class="font-semibold text-gray-600">🔗 Lien :</span>
+        <a href="{{ p.lien }}" target="_blank" class="ml-2 text-green-700 underline">{{ p.lien }}</a>
+      </div>
+      {% endif %}
+
+      
+
+      {% if p.pdf %}
+      <div class="text-center mt-6">
+        <a href="{{ url_for('static', filename=p.pdf.split('static/')[1]) }}"
+           target="_blank"
+           class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+          📄 Voir le document PDF
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-gray-500 py-6">
+    Powered by <span class="text-green-700 font-semibold">Lumea</span> © {{ now.year }}
+  </footer>
+
+</body>
+</html>
