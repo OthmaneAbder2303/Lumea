@@ -5,64 +5,111 @@
   <title>Liste des personnes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.05) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(-20px, -20px) rotate(120deg); }
+      66% { transform: translate(20px, -10px) rotate(240deg); }
+    }
+
+    .glass-card {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 25px 45px rgba(225, 29, 72, 0.1);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
 </head>
-<body class="bg-green-50 p-4">
-  <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-    <h2 class="text-2xl font-bold text-green-700 mb-4">👥 Personnes enregistrées</h2>
+<body class="p-6 relative z-10">
 
-    <table class="w-full text-sm text-left border border-green-100">
-      <thead class="bg-green-100 text-green-800">
-        <tr>
-          <th class="p-2">Nom</th>
-          <th class="p-2">Contact</th>
-          <th class="p-2">Alerte</th>
-          <th class="p-2">QR Code</th>
-          <th class="p-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-green-100">
-        {% for p in personnes %}
-        <tr>
-          <td class="p-2">{{ p.nom }}</td>
-          <td class="p-2">{{ p.contact }}</td>
-          <td class="p-2">{{ p.canal_alerte }}</td>
-          <td class="p-2"><img src="{{ url_for('static', filename='qrcodes/' + p.uuid + '.png') }}" alt="QR Code" class="w-16 h-16 mx-auto" /></td>
-         <td class="p-2 flex flex-col gap-2">
+  <div class="glass-card max-w-6xl mx-auto p-8 rounded-3xl">
+    <h2 class="text-2xl font-bold text-rose-700 mb-6">👥 Personnes enregistrées</h2>
 
-  <!-- Bouton Modifier -->
-  <a href="{{ url_for('modifier_personne', uuid=p.uuid) }}"
-     class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 text-center">
-    ✏️ Modifier
-  </a>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left rounded-xl overflow-hidden">
+        <thead class="bg-rose-100 text-rose-700 font-semibold">
+          <tr>
+            <th class="p-3">Nom</th>
+            <th class="p-3">Contact</th>
+            <th class="p-3">Alerte</th>
+            <th class="p-3">QR Code</th>
+            <th class="p-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-rose-100 text-rose-900">
+          {% for p in personnes %}
+          <tr>
+            <td class="p-3">{{ p.nom }}</td>
+            <td class="p-3">{{ p.contact }}</td>
+            <td class="p-3 capitalize">{{ p.canal_alerte }}</td>
+            <td class="p-3">
+              <img src="{{ url_for('static', filename='qrcodes/' + p.uuid + '.png') }}" alt="QR Code" class="w-16 h-16 mx-auto rounded shadow" />
+            </td>
+            <td class="p-3">
+              <div class="flex flex-col sm:flex-row gap-2 justify-center items-center">
+                <!-- Modifier -->
+                <a href="{{ url_for('modifier_personne', uuid=p.uuid) }}"
+                   class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl shadow text-sm transition">
+                  ✏️ Modifier
+                </a>
 
-  <!-- Bouton Supprimer -->
-  <form method="POST" action="{{ url_for('supprimer_personne', uuid=p.uuid) }}"
-        onsubmit="return confirm('Supprimer {{ p.nom }} ?');">
-    <button type="submit"
-            class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 w-full">
-      🗑️ Supprimer
-    </button>
-  </form>
+                <!-- Supprimer -->
+                <form method="POST" action="{{ url_for('supprimer_personne', uuid=p.uuid) }}"
+                      onsubmit="return confirm('Supprimer {{ p.nom }} ?');">
+                  <button type="submit"
+                          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow text-sm transition w-full sm:w-auto">
+                    🗑️ Supprimer
+                  </button>
+                </form>
 
-  <!-- Bouton Télécharger QR -->
-  <a href="{{ url_for('telecharger_qr', uuid=p.uuid) }}"
-     class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-center"
-     download>
-    📥 QR Code
-  </a>
-
-</td>
-
-
-
-        </tr>
-        {% else %}
-        <tr>
-          <td colspan="4" class="p-2 text-center text-gray-500">Aucune personne enregistrée.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+                <!-- Télécharger QR -->
+                <a href="{{ url_for('telecharger_qr', uuid=p.uuid) }}"
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow text-sm transition"
+                   download>
+                  📥 QR Code
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="p-4 text-center text-rose-500 italic">Aucune personne enregistrée.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
+
 </body>
 </html>

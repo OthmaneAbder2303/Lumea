@@ -5,19 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Localisation en cours...</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.05) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(-20px, -20px) rotate(120deg); }
+      66% { transform: translate(20px, -10px) rotate(240deg); }
+    }
+
+    .glass-loader {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 25px 45px rgba(225, 29, 72, 0.1);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
 </head>
-<body class="bg-green-50 flex items-center justify-center h-screen">
-  <div class="text-center">
+<body class="flex items-center justify-center h-screen relative z-10">
+
+  <div class="glass-loader text-center p-10 rounded-3xl max-w-md w-full mx-4 z-10">
+    <!-- Spinner animé -->
     <div class="flex justify-center mb-6">
-      <!-- Spinner animé -->
-      <svg class="animate-spin h-12 w-12 text-green-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <svg class="animate-spin h-12 w-12 text-rose-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor"
               d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
       </svg>
     </div>
-    <h2 class="text-lg font-semibold text-green-700">⏳ Localisation en cours...</h2>
-    <p class="text-sm text-gray-600 mt-2">Merci de patienter pendant la redirection vers la fiche.</p>
+
+    <h2 class="text-lg font-semibold text-rose-700">⏳ Localisation en cours...</h2>
+    <p class="text-sm text-rose-500 mt-2">Merci de patienter pendant la redirection vers la fiche.</p>
   </div>
 
   <script>
@@ -35,7 +87,7 @@
       function redirectToFiche() {
         setTimeout(() => {
           window.location.href = `/fiche/${uuid}`;
-        }, 300); // petite pause pour fluidité
+        }, 300);
       }
 
       function fallbackToIP() {
@@ -51,7 +103,7 @@
           })
           .then(res => {
             if (res.ok) redirectToFiche();
-            else redirectToFiche(); // fallback même si erreur
+            else redirectToFiche();
           })
           .catch(() => redirectToFiche());
       }
@@ -69,7 +121,7 @@
 
         try {
           const res = await postData(data);
-          redirectToFiche(); // succès ou pas, on redirige
+          redirectToFiche();
         } catch {
           redirectToFiche();
         }

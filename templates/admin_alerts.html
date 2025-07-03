@@ -4,38 +4,89 @@
   <meta charset="UTF-8">
   <title>Alertes envoyées</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-green-50 p-6">
-  <h2 class="text-3xl font-bold text-green-700 mb-6">📨 Alertes envoyées</h2>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-  <table class="min-w-full bg-white border border-green-200 rounded shadow">
-    <thead class="bg-green-100 text-green-700">
-      <tr>
-        <th class="p-3 text-left">Date</th>
-        <th class="p-3 text-left">Heure</th>
-        <th class="p-3 text-left">Nom</th>
-        <th class="p-3 text-left">Canal</th>
-        <th class="p-3 text-left">GPS</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for alerte in alertes %}
-      <tr class="border-t border-green-200 hover:bg-green-50">
-        <td class="p-3">{{ alerte.date }}</td>
-        <td class="p-3">{{ alerte.heure }}</td>
-        <td class="p-3">{{ alerte.nom }}</td>
-        <td class="p-3 capitalize">{{ alerte.canal }}</td>
-        <td class="p-3">
-          <a href="https://www.google.com/maps?q={{ alerte.latitude }},{{ alerte.longitude }}" target="_blank"
-            class="text-green-700 underline">Voir</a>
-        </td>
-      </tr>
-      {% else %}
-      <tr>
-        <td colspan="5" class="p-4 text-center text-gray-500">Aucune alerte enregistrée</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.05) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(-20px, -20px) rotate(120deg); }
+      66% { transform: translate(20px, -10px) rotate(240deg); }
+    }
+
+    .glass-table {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 40px rgba(225, 29, 72, 0.1);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body class="p-6 relative z-10">
+
+  <h2 class="text-3xl font-bold text-rose-700 mb-8 text-center">📨 Alertes envoyées</h2>
+
+  <div class="overflow-x-auto max-w-6xl mx-auto">
+    <table class="glass-table min-w-full rounded-2xl overflow-hidden text-sm text-left text-rose-900">
+      <thead class="bg-rose-100 text-rose-700 font-semibold">
+        <tr>
+          <th class="p-4">Date</th>
+          <th class="p-4">Heure</th>
+          <th class="p-4">Nom</th>
+          <th class="p-4">Canal</th>
+          <th class="p-4">GPS</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for alerte in alertes %}
+        <tr class="border-t border-rose-200 hover:bg-rose-50 transition duration-150">
+          <td class="p-4">{{ alerte.date }}</td>
+          <td class="p-4">{{ alerte.heure }}</td>
+          <td class="p-4">{{ alerte.nom }}</td>
+          <td class="p-4 capitalize">{{ alerte.canal }}</td>
+          <td class="p-4">
+            <a href="https://www.google.com/maps?q={{ alerte.latitude }},{{ alerte.longitude }}"
+               target="_blank"
+               class="text-rose-700 underline hover:text-rose-900 transition">
+              Voir
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="p-6 text-center text-rose-500">Aucune alerte enregistrée</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
 </body>
 </html>
