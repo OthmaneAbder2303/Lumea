@@ -200,10 +200,11 @@
 
   <!-- Première partie : Vidéo en fond avec titre -->
   <section class="section-one">
-    <video autoplay loop muted class="video-background">
-      <source src="C:\MAMP\htdocs\Lumea_1\lumeavd.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+   <video autoplay loop muted class="video-background">
+  <source src="{{ url_for('static', filename='videos/lumeavd.mp4') }}" type="video/mp4">
+  Votre navigateur ne supporte pas la vidéo.
+</video>
+
     
     <div class="text-center z-20 px-6 mt-16">
       <h1 class="title title-glow text-5xl md:text-6xl font-bold text-white mb-4 fade-in">
