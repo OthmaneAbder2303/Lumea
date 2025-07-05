@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Lumea - Votre QR Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .btn-modern {
+      background: linear-gradient(135deg, #c03755, #801340);
+      box-shadow: 0 8px 25px rgba(225, 29, 72, 0.4);
+      border: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-modern::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s;
+    }
+    
+    .btn-modern:hover::before {
+      left: 100%;
+    }
+    
+    .btn-modern:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 35px rgba(225, 29, 72, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-rose-50 flex items-center justify-center min-h-screen">
+  <div class="max-w-lg w-full bg-white/20 backdrop-blur-sm rounded-3xl p-8 border border-white/30 text-center">
+    <h2 class="text-3xl font-bold text-rose-900 mb-6">Votre QR Code</h2>
+    <p class="text-rose-700 mb-4">Votre QR code a été généré avec succès !</p>
+    <img src="{{ url_for('static', filename=qr_path) }}" alt="QR Code" class="mx-auto mb-6">
+    <p class="text-rose-700 mb-4"><strong>Votre UUID :</strong> {{ uid }}</p>
+    <a href="{{ url_for('download_qr', uuid=uid) }}" class="inline-block btn-modern text-white font-semibold py-3 px-8 rounded-xl mb-6">
+      Télécharger le QR Code
+    </a>
+    
+    <!-- Formulaire de mise à jour -->
+    <h3 class="text-xl font-semibold text-rose-900 mb-4">Modifier vos informations</h3>
+    <form method="POST" action="{{ url_for('update', uuid=uid) }}" enctype="multipart/form-data" class="space-y-4">
+      <div>
+        <label for="nom" class="block text-rose-700 font-medium">Nom</label>
+        <input type="text" id="nom" name="nom" value="{{ p.nom }}" required class="w-full px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">
+      </div>
+      <div>
+        <label for="contact" class="block text-rose-700 font-medium">Contact (Email ou Téléphone)</label>
+        <input type="text" id="contact" name="contact" value="{{ p.contact }}" required class="w-full px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">
+      </div>
+      <div>
+        <label for="canal_alerte" class="block text-rose-700 font-medium">Canal d'alerte</label>
+        <select id="canal_alerte" name="canal_alerte" class="w-full px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">
+          <option value="email" {% if p.canal_alerte == 'email' %}selected{% endif %}>Email</option>
+          <option value="sms" {% if p.canal_alerte == 'sms' %}selected{% endif %}>SMS</option>
+          <option value="whatsapp" {% if p.canal_alerte == 'whatsapp' %}selected{% endif %}>WhatsApp</option>
+        </select>
+      </div>
+      <div>
+        <label for="infos" class="block text-rose-700 font-medium">Informations supplémentaires</label>
+        <textarea id="infos" name="infos" class="w-full px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">{{ p.infos or '' }}</textarea>
+      </div>
+      <div>
+        <label for="texte_libre" class="block text-rose-700 font-medium">Texte libre</label>
+        <textarea id="texte_libre" name="texte_libre" class="w-full px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">{{ p.texte_libre or '' }}</textarea>
+      </div>
+      <div>
+        <label for="lien" class="block text-rose-700 font-medium">Lien externe</label>
+        <input type="url" id="lien" name="lien" value="{{ p.lien or '' }}" class="w-full px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">
+      </div>
+      <div>
+        <label for="photo" class="block text-rose-700 font-medium">Photo (optionnel, remplace l'existante)</label>
+        <input type="file" id="photo" name="photo" accept="image/*" class="w-full px-4 py-2 rounded-lg border border-rose-200">
+      </div>
+      <div>
+        <label for="pdf" class="block text-rose-700 font-medium">PDF (optionnel, remplace l'existant)</label>
+        <input type="file" id="pdf" name="pdf" accept=".pdf" class="w-full px-4 py-2 rounded-lg border border-rose-200">
+      </div>
+      <button type="submit" class="w-full btn-modern text-white font-semibold py-3 rounded-xl">Mettre à jour et Régénérer QR Code</button>
+    </form>
+    
+    <p class="text-center text-rose-600 mt-4">
+      <a href="/" class="underline hover:text-rose-800">Retour à l'accueil</a>
+    </p>
+  </div>
+</body>
+</html>

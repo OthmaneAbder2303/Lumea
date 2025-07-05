@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
 #SSL POUR HTTPS
-context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 context.load_cert_chain('cert.pem', 'key.pem')
 
 
@@ -302,14 +302,20 @@ def alertes():
     alertes = db.execute("SELECT * FROM alerts ORDER BY date DESC, heure DESC").fetchall()
     return render_template("admin_alerts.html", alertes=alertes)
 
-@app.route("/fiche/<uuid>")
-
-def fiche(uuid):
+@app.route("/fiche", methods=["GET"])
+@app.route("/fiche/<uuid>", methods=["GET"])
+def fiche(uuid=None):
+    if not uuid:
+        uuid = request.args.get('uuid')
+    if not uuid:
+        return render_template("error.html", message="UUID manquant. Veuillez entrer un identifiant valide."), 400
+    
     db = get_db()
     personne = db.execute("SELECT * FROM persons WHERE uuid = ?", (uuid,)).fetchone()
-    return render_template("profile.html", p=personne, now=datetime.now())
-
-
+    if not personne:
+        return render_template("error.html", message="Aucun utilisateur trouvé avec cet UUID."), 404
+    
+    return render_template("user_profile.html", p=personne, uuid=uuid, now=datetime.now())
 
 
 
@@ -340,6 +346,142 @@ def telecharger_qr(uuid):
     if os.path.exists(qr_path):
         return send_file(qr_path, as_attachment=True)
     return "QR code introuvable", 404
+
+
+
+
+# Add new route for user registration
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        nom = request.form['nom']
+        infos = request.form.get('infos', '')
+        contact = request.form['contact']
+        canal_alerte = request.form.get('canal_alerte', 'email')
+        texte_libre = request.form.get('texte_libre', '')
+        lien = request.form.get('lien', '')
+        photo_file = request.files.get('photo')
+        pdf_file = request.files.get('pdf')
+
+        try:
+            # Upload photo
+            photo_path = None
+            if photo_file and photo_file.filename:
+                photo_filename = f"{uuid.uuid4()}_{photo_file.filename}"
+                photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
+                photo_file.save(photo_path)
+
+            # Upload PDF
+            pdf_path = None
+            if pdf_file and pdf_file.filename:
+                pdf_filename = f"{uuid.uuid4()}_{pdf_file.filename}"
+                pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename)
+                pdf_file.save(pdf_path)
+
+            # Generate unique UUID
+            uid = str(uuid.uuid4())
+
+            # Insert into persons table
+            db = get_db()
+            db.execute("""
+                INSERT INTO persons (uuid, nom, infos, contact, canal_alerte, photo, pdf, lien, texte_libre)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (uid, nom, infos, contact, canal_alerte, photo_path, pdf_path, lien, texte_libre))
+            db.commit()
+
+            # Fetch inserted person data
+            personne = db.execute("SELECT * FROM persons WHERE uuid = ?", (uid,)).fetchone()
+
+            # Generate QR code
+            host_ip = get_local_ip()
+            port = 5000
+            full_url = f"https://{host_ip}:{port}/scan/{uid}"
+            qr = qrcode.make(full_url)
+            qr_path = os.path.join(QR_FOLDER, f"{uid}.png")
+            qr.save(qr_path)
+
+            return render_template("qr_created_user.html", uid=uid, qr_path=qr_path, p=personne)
+        except Exception as e:
+            return render_template("error.html", message=f"Erreur lors de l'inscription : {str(e)}"), 500
+
+    return render_template("register.html")
+
+
+# Add new route for downloading QR code
+@app.route("/download_qr/<uuid>")
+def download_qr(uuid):
+    qr_path = os.path.join(QR_FOLDER, f"{uuid}.png")
+    if os.path.exists(qr_path):
+        return send_file(qr_path, as_attachment=True)
+    return "QR code not found", 404
+
+
+# New /update/<uuid> route for updating user information
+@app.route("/update/<uuid>", methods=["POST"])
+def update(uuid):
+    db = get_db()
+    personne = db.execute("SELECT * FROM persons WHERE uuid = ?", (uuid,)).fetchone()
+    if not personne:
+        return render_template("error.html", message="Aucun utilisateur trouvé avec cet UUID."), 404
+
+    nom = request.form['nom']
+    infos = request.form.get('infos', '')
+    contact = request.form['contact']
+    canal_alerte = request.form.get('canal_alerte', 'email')
+    texte_libre = request.form.get('texte_libre', '')
+    lien = request.form.get('lien', '')
+    photo_file = request.files.get('photo')
+    pdf_file = request.files.get('pdf')
+
+    try:
+        # Photo
+        photo_path = personne["photo"]
+        if photo_file and photo_file.filename:
+            photo_filename = f"{uuid.uuid4()}_{photo_file.filename}"
+            photo_path = f"uploads/{photo_filename}"  # chemin relatif à static/
+            photo_file.save(os.path.join(app.static_folder, photo_path))
+            # Suppression ancienne photo
+            if personne["photo"]:
+                old_photo_path = os.path.join(app.static_folder, personne["photo"])
+                if os.path.exists(old_photo_path):
+                    os.remove(old_photo_path)
+
+        # PDF
+        pdf_path = personne["pdf"]
+        if pdf_file and pdf_file.filename:
+            pdf_filename = f"{uuid.uuid4()}_{pdf_file.filename}"
+            pdf_path = f"uploads/{pdf_filename}"
+            pdf_file.save(os.path.join(app.static_folder, pdf_path))
+            # Suppression ancien PDF
+            if personne["pdf"]:
+                old_pdf_path = os.path.join(app.static_folder, personne["pdf"])
+                if os.path.exists(old_pdf_path):
+                    os.remove(old_pdf_path)
+
+        # Update BDD
+        db.execute("""
+            UPDATE persons 
+            SET nom = ?, infos = ?, contact = ?, canal_alerte = ?, photo = ?, pdf = ?, lien = ?, texte_libre = ?
+            WHERE uuid = ?
+        """, (nom, infos, contact, canal_alerte, photo_path, pdf_path, lien, texte_libre, uuid))
+        db.commit()
+
+        # Recharger la personne à jour
+        personne = db.execute("SELECT * FROM persons WHERE uuid = ?", (uuid,)).fetchone()
+
+        # Regenerate QR code
+        host_ip = get_local_ip()
+        port = 5000
+        full_url = f"https://{host_ip}:{port}/scan/{uuid}"
+        qr = qrcode.make(full_url)
+        qr_path_relative = f"qrcodes/{uuid}.png"
+        qr.save(os.path.join(app.static_folder, qr_path_relative))
+
+        return render_template("qr_created_user.html", p=personne, uid=uuid, qr_path=qr_path_relative)
+    except Exception as e:
+        return render_template("error.html", message=f"Erreur lors de la mise à jour : {str(e)}"), 500
+
+
 
 
 if __name__ == "__main__":

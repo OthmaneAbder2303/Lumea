@@ -185,6 +185,9 @@
           <a href="/login" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg transition duration-200 font-medium">
             Accès Admin
           </a>
+          <a href="/register" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg transition duration-200 font-medium">
+            S'inscrire
+          </a>
         </div>
       </div>
     </div>
@@ -198,14 +201,12 @@
     </div>
   </div>
 
-  <!-- Première partie : Vidéo en fond avec titre -->
+ <!-- Première partie : Vidéo en fond avec titre -->
   <section class="section-one">
-   <video autoplay loop muted class="video-background">
-  <source src="{{ url_for('static', filename='videos/lumeavd.mp4') }}" type="video/mp4">
-  Votre navigateur ne supporte pas la vidéo.
-</video>
-
-    
+    <video autoplay loop muted class="video-background">
+      <source src="static\videos\lumeavd.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
     <div class="text-center z-20 px-6 mt-16">
       <h1 class="title title-glow text-5xl md:text-6xl font-bold text-white mb-4 fade-in">
         Bienvenue sur <span class="bg-gradient-to-r from-pink-300 to-rose-200 bg-clip-text text-transparent">Lumea</span>
@@ -216,7 +217,7 @@
     </div>
   </section>
 
-  <!-- Deuxième partie : Texte et bouton Accès Admin -->
+  <!-- Deuxième partie : Texte, boutons et accès utilisateur -->
   <section class="section-two relative z-10">
     <div class="text-center px-6 sm:px-0 max-w-4xl mx-auto">
       
@@ -282,13 +283,30 @@
         </div>
       </div>
       
-      <!-- Bouton d'accès -->
-      <a href="/login" class="inline-block btn-modern text-white font-semibold py-4 px-8 rounded-xl transition duration-300">
-        🔐 Accès Administration
-      </a>
-      <p class="text-rose-600 mt-3 text-sm">
-        Interface sécurisée pour la gestion des codes QR
-      </p>
+      <!-- Boutons d'accès -->
+      <div class="space-y-6">
+        <!-- Admin et Inscription -->
+        <div class="space-x-4">
+          <a href="/login" class="inline-block btn-modern text-white font-semibold py-4 px-8 rounded-xl transition duration-300">
+            🔐 Accès Administration
+          </a>
+          <a href="/register" class="inline-block btn-modern text-white font-semibold py-4 px-8 rounded-xl transition duration-300">
+            📝 S'inscrire et Obtenir un QR Code
+          </a>
+        </div>
+        <!-- Accès utilisateur aux infos et QR code -->
+        <div class="bg-white/20 backdrop-blur-sm rounded-3xl p-6 border border-white/30">
+          <h3 class="text-xl font-semibold text-rose-900 mb-4">Accéder à vos informations</h3>
+          <p class="text-rose-700 mb-4">Entrez votre identifiant unique (UUID) pour voir ou modifier votre profil et votre QR code.</p>
+          <form action="/fiche" method="GET" class="flex flex-col sm:flex-row gap-4 justify-center">
+            <input type="text" name="uuid" placeholder="Entrez votre UUID" required class="px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <button type="submit" class="btn-modern text-white font-semibold py-2 px-6 rounded-xl">Voir Profil</button>
+          </form>
+          <p class="text-rose-600 mt-3 text-sm">
+            Vous avez reçu votre UUID après inscription. Contactez l'administrateur si perdu.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -321,7 +339,6 @@
       });
     }, observerOptions);
     
-    // Observer les cartes de fonctionnalités
     document.querySelectorAll('.feature-card').forEach(card => {
       observer.observe(card);
     });
