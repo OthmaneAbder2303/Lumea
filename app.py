@@ -397,7 +397,7 @@ def register():
             port = 5000
             full_url = f"https://{host_ip}:{port}/scan/{uid}"
             qr = qrcode.make(full_url)
-            qr_path_relative = f"qrcodes/{uuid}.png"
+            qr_path_relative = f"qrcodes/{uid}.png"
             qr.save(os.path.join(app.static_folder, qr_path_relative))
 
             return render_template("qr_created_user.html", uid=uid, qr_path=qr_path_relative, p=personne)
