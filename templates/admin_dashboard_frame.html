@@ -7,64 +7,193 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    * { font-family: 'Poppins', sans-serif; }
-
-    /* Ajout pour responsive sidebar */
-    @media (max-width: 1024px) {
-      .sidebar-gradient {
-        position: fixed;
-        z-index: 50;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-      }
-      .sidebar-open {
-        transform: translateX(0);
-      }
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    /* Styles personnalisés (inchangés) */
+    .sidebar-gradient {
+      background: linear-gradient(135deg, #be123c 0%, #9f1239 50%, #881337 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .sidebar-gradient::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+      z-index: 1;
+    }
+    .sidebar-content {
+      position: relative;
+      z-index: 2;
+    }
+    .nav-item {
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .nav-item:hover::before {
+      left: 100%;
+    }
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s;
+    }
+    .nav-item:hover {
+      transform: translateX(8px) scale(1.02);
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+    }
+    .logo-text {
+      background: linear-gradient(135deg, #ffffff, #fce7f3, #f9a8d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    }
+    .logout-btn {
+      background: linear-gradient(135deg, #b62662, #830a3c);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+    }
+    .logout-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s;
+    }
+    .logout-btn:hover::before {
+      left: 100%;
+    }
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+    }
+    .content-area {
+      background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+      position: relative;
+      overflow: hidden;
+    }
+    .content-area::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.03) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+      z-index: 1;
+    }
+    .iframe-container {
+      position: relative;
+      z-index: 2;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .admin-badge {
+      background: linear-gradient(135deg, #c03755, #f9a8d4);
+      animation: pulse 2s infinite;
+      box-shadow: 0 4px 15px rgba(192, 55, 85, 0.4);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(-20px, -20px) rotate(120deg); }
+      66% { transform: translate(20px, -10px) rotate(240deg); }
     }
   </style>
 </head>
-<body class="h-screen overflow-hidden">
-  <div class="lg:flex h-full">
-    <!-- Sidebar -->
-    <div id="sidebar" class="w-80 sidebar-gradient flex flex-col h-full lg:relative shadow-2xl">
-      <!-- ... contenu sidebar (inchangé) ... -->
+<body class="min-h-screen flex flex-col lg:flex-row">
+  <!-- Sidebar -->
+  <aside class="w-full lg:w-80 sidebar-gradient flex flex-col shadow-2xl">
+    <div class="sidebar-content p-8">
+      <div class="mb-8 text-center">
+        <div class="mb-4">
+          <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo Lumea"
+               class="w-24 h-24 mx-auto rounded-full logo-image">
+        </div>
+        <h2 class="text-2xl font-bold logo-text mb-2">Lumea</h2>
+        <div class="admin-badge text-white text-xs px-3 py-1 rounded-full inline-flex items-center">
+          <div class="w-2 h-2 bg-green-600 rounded-full mr-2 animate-pulse"></div>
+          Administration
+        </div>
+      </div>
+      <nav class="space-y-3 flex-1">
+        <a href="{{ url_for('ajouter') }}" target="content" class="nav-item flex items-center px-6 py-4 rounded-xl">
+          <span class="text-white">➕ Ajouter une personne</span>
+        </a>
+        <a href="{{ url_for('alertes') }}" target="content" class="nav-item flex items-center px-6 py-4 rounded-xl">
+          <span class="text-white">🔔 Voir les alertes</span>
+        </a>
+        <a href="{{ url_for('liste_personnes') }}" target="content" class="nav-item flex items-center px-6 py-4 rounded-xl">
+          <span class="text-white">📋 Liste des personnes</span>
+        </a>
+      </nav>
+      <div class="mt-8">
+        <a href="{{ url_for('logout') }}" class="logout-btn text-center w-full px-6 py-3 rounded-xl text-white font-semibold">
+          🔓 Déconnexion
+        </a>
+      </div>
     </div>
+  </aside>
 
-    <!-- Overlay pour mobile -->
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
-
-    <!-- Contenu principal -->
-    <div class="flex-1 content-area flex flex-col">
-      <!-- Topbar responsive -->
-      <div class="top-bar p-4 lg:p-6 flex items-center justify-between">
-        <button onclick="toggleSidebar()" class="lg:hidden text-gray-700">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+  <!-- Main content -->
+  <main class="flex-1 content-area flex flex-col">
+    <header class="top-bar p-6">
+      <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-xl lg:text-2xl font-bold text-gray-800">Tableau de bord</h1>
-          <p class="text-sm text-gray-600">Gestion des QR codes et alertes</p>
+          <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
+          <p class="text-gray-600 mt-1">Gestion des codes QR et surveillance</p>
         </div>
-        <!-- ... utilisateur info ... -->
-      </div>
-
-      <!-- Contenu iframe -->
-      <div class="flex-1 p-4 lg:p-6">
-        <div class="iframe-container h-full">
-          <iframe name="content" src="{{ url_for('ajouter') }}" class="w-full h-full border-0"></iframe>
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <div class="text-sm font-medium text-gray-800">Administrateur</div>
+            <div class="text-xs text-gray-600">En ligne</div>
+          </div>
+          <div class="w-10 h-10 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+              <path d="M21 9V7L15 4V6C15 7.1 14.1 8 13 8S11 7.1 11 6V4L5 7V9C5 10.1 5.9 11 7 11S9 10.1 9 9V15L10.5 17L12 15V9C12 10.1 12.9 11 14 11S16 10.1 16 9V15L17.5 17L19 15V9C19 10.1 19.9 11 21 11V9Z"/>
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      sidebar.classList.toggle('sidebar-open');
-      overlay.classList.toggle('hidden');
-    }
-  </script>
+    </header>
+    <section class="flex-1 p-6">
+      <div class="iframe-container h-full">
+        <iframe name="content" src="{{ url_for('ajouter') }}" class="w-full h-full border-0 rounded-xl"></iframe>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
