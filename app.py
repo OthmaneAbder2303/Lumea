@@ -397,10 +397,10 @@ def register():
             port = 5000
             full_url = f"https://{host_ip}:{port}/scan/{uid}"
             qr = qrcode.make(full_url)
-            qr_path = os.path.join(QR_FOLDER, f"{uid}.png")
-            qr.save(qr_path)
+            qr_path_relative = f"qrcodes/{uuid}.png"
+            qr.save(os.path.join(app.static_folder, qr_path_relative))
 
-            return render_template("qr_created_user.html", uid=uid, qr_path=qr_path, p=personne)
+            return render_template("qr_created_user.html", uid=uid, qr_path=qr_path_relative, p=personne)
         except Exception as e:
             return render_template("error.html", message=f"Erreur lors de l'inscription : {str(e)}"), 500
 
