@@ -2,15 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lumea - Générateur QR Code</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
-    * {
-      font-family: 'Poppins', sans-serif;
-    }
-    
+    * { font-family: 'Poppins', sans-serif; }
+
     #spinner {
       position: fixed;
       top: 0; left: 0;
@@ -21,7 +19,7 @@
       justify-content: center;
       z-index: 50;
     }
-    
+
     .spinner-modern {
       width: 60px;
       height: 60px;
@@ -31,12 +29,12 @@
       animation: spin 1s linear infinite;
       box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
     }
-    
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    
+
     .video-background {
       position: absolute;
       top: 0;
@@ -47,7 +45,7 @@
       z-index: 10;
       filter: brightness(0.4) saturate(1.2);
     }
-    
+
     .section-one {
       position: relative;
       min-height: 60vh;
@@ -57,7 +55,7 @@
       z-index: 20;
       background: linear-gradient(135deg, rgba(225, 29, 72, 0.1), rgba(190, 18, 60, 0.1));
     }
-    
+
     .section-two {
       min-height: 40vh;
       display: flex;
@@ -67,7 +65,7 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     .section-two::before {
       content: '';
       position: absolute;
@@ -78,34 +76,34 @@
       background: radial-gradient(circle, rgba(225, 29, 72, 0.05) 0%, transparent 70%);
       animation: float 20s ease-in-out infinite;
     }
-    
+
     @keyframes float {
       0%, 100% { transform: translate(0, 0) rotate(0deg); }
       33% { transform: translate(-20px, -20px) rotate(120deg); }
       66% { transform: translate(20px, -10px) rotate(240deg); }
     }
-    
+
     .title-glow {
       text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
                    0 0 40px rgba(255, 255, 255, 0.6),
                    0 0 60px rgba(255, 255, 255, 0.4);
       animation: glow 3s ease-in-out infinite alternate;
     }
-    
+
     @keyframes glow {
       from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6); }
       to { text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 60px rgba(255, 255, 255, 0.8); }
     }
-    
+
     .btn-modern {
       background: linear-gradient(135deg, #c03755, #801340);
       box-shadow: 0 8px 25px rgba(225, 29, 72, 0.4);
       border: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
     }
-    
+
     .btn-modern::before {
       content: '';
       position: absolute;
@@ -116,48 +114,45 @@
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
       transition: left 0.6s;
     }
-    
-    .btn-modern:hover::before {
-      left: 100%;
-    }
-    
+
+    .btn-modern:hover::before { left: 100%; }
     .btn-modern:hover {
       transform: translateY(-2px) scale(1.02);
       box-shadow: 0 12px 35px rgba(225, 29, 72, 0.6);
     }
-    
+
     .feature-card {
       backdrop-filter: blur(10px);
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.3);
       transition: all 0.3s ease;
     }
-    
+
     .feature-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 30px rgba(225, 29, 72, 0.2);
     }
-    
+
     .qr-icon {
       background: linear-gradient(135deg, #059669, #0891b2);
       animation: pulse 2s infinite;
     }
-    
+
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
-    
+
     .fade-in {
       opacity: 0;
       transform: translateY(30px);
       animation: fadeInUp 1s ease-out forwards;
     }
-    
+
     .fade-in-delay {
       animation-delay: 0.3s;
     }
-    
+
     @keyframes fadeInUp {
       to {
         opacity: 1;
@@ -168,32 +163,25 @@
 </head>
 <body class="bg-rose-50 flex flex-col min-h-screen">
 
-  <!-- Barre de navigation -->
+  <!-- Navbar -->
   <nav class="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-lg border-b border-white/20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <!-- Logo -->
+      <div class="flex flex-wrap justify-between items-center h-16">
         <div class="flex items-center">
           <h2 class="text-xl font-bold text-white">Lumea</h2>
           <span class="ml-2 text-sm text-white/70">QR Generator</span>
         </div>
-        
-        <!-- Menu -->
-        <div class="flex items-center space-x-4">
-          <a href="#" class="text-white/80 hover:text-white transition duration-200">Accueil</a>
-          <a href="#" class="text-white/80 hover:text-white transition duration-200">À propos</a>
-          <a href="/login" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg transition duration-200 font-medium">
-            Accès Admin
-          </a>
-          <a href="/register" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg transition duration-200 font-medium">
-            S'inscrire
-          </a>
+        <div class="flex flex-wrap items-center justify-end gap-4 mt-2 sm:mt-0">
+          <a href="#" class="text-white/80 hover:text-white transition">Accueil</a>
+          <a href="#" class="text-white/80 hover:text-white transition">À propos</a>
+          <a href="/login" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg font-medium transition">Accès Admin</a>
+          <a href="/register" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg font-medium transition">S'inscrire</a>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Spinner de chargement moderne -->
+  <!-- Spinner -->
   <div id="spinner">
     <div class="text-center">
       <div class="spinner-modern mx-auto"></div>
@@ -201,147 +189,123 @@
     </div>
   </div>
 
- <!-- Première partie : Vidéo en fond avec titre -->
+  <!-- Section 1 -->
   <section class="section-one">
     <video autoplay loop muted class="video-background">
-      <source src="static\videos\lumeavd.mp4" type="video/mp4">
+      <source src="static/videos/lumeavd.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <div class="text-center z-20 px-6 mt-16">
-      <h1 class="title title-glow text-5xl md:text-6xl font-bold text-white mb-4 fade-in">
+    <div class="text-center z-20 px-4 sm:px-6 mt-24">
+      <h1 class="title-glow text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 fade-in">
         Bienvenue sur <span class="bg-gradient-to-r from-pink-300 to-rose-200 bg-clip-text text-transparent">Lumea</span>
       </h1>
-      <p class="text-white/90 text-xl font-light max-w-2xl mx-auto fade-in fade-in-delay">
+      <p class="text-white/90 text-base sm:text-lg md:text-xl font-light max-w-2xl mx-auto fade-in fade-in-delay">
         Générateur de codes QR pour la sécurité connectée
       </p>
     </div>
   </section>
 
-  <!-- Deuxième partie : Texte, boutons et accès utilisateur -->
+  <!-- Section 2 -->
   <section class="section-two relative z-10">
-    <div class="text-center px-6 sm:px-0 max-w-4xl mx-auto">
-      
-      <!-- Cards avec fonctionnalités -->
-      <div class="grid md:grid-cols-3 gap-6 mb-12">
-        
+    <div class="text-center px-4 sm:px-6 max-w-6xl mx-auto">
+      <!-- Feature Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+        <!-- Carte 1 -->
         <div class="feature-card rounded-2xl p-6 text-center">
           <div class="qr-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 14v1m8-8h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 14v1m8-8h-1M4 12H3..."/>
             </svg>
           </div>
           <h3 class="font-semibold text-rose-900 mb-2">Génération QR</h3>
           <p class="text-rose-700 text-sm">Codes QR personnalisés pour chaque bracelet</p>
         </div>
-        
+        <!-- Carte 2 -->
         <div class="feature-card rounded-2xl p-6 text-center">
           <div class="w-16 h-16 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="..."/>
             </svg>
           </div>
           <h3 class="font-semibold text-rose-900 mb-2">Géolocalisation</h3>
           <p class="text-rose-700 text-sm">Localisation précise en temps réel</p>
         </div>
-        
+        <!-- Carte 3 -->
         <div class="feature-card rounded-2xl p-6 text-center">
           <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM21 9H3l18-6v5z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="..."/>
             </svg>
           </div>
           <h3 class="font-semibold text-rose-900 mb-2">Alertes Instant</h3>
           <p class="text-rose-700 text-sm">Notifications immédiates à chaque scan</p>
         </div>
-        
       </div>
-      
+
       <!-- Description principale -->
-      <div class="bg-white/20 backdrop-blur-sm rounded-3xl p-8 mb-8 border border-white/30">
-        <p class="text-lg text-rose-900 mb-6 leading-relaxed">
-          <strong>Lumea</strong> est une solution de sécurité innovante qui vous permet de surveiller et localiser vos proches en temps réel grâce à un <em>bracelet connecté avec QR code</em>.
+      <div class="bg-white/20 backdrop-blur-sm rounded-3xl p-6 sm:p-8 mb-8 border border-white/30">
+        <p class="text-base sm:text-lg text-rose-900 mb-4 leading-relaxed">
+          <strong>Lumea</strong> est une solution de sécurité innovante pour localiser vos proches en temps réel grâce à un <em>bracelet QR code</em>.
         </p>
-        <p class="text-rose-800 mb-6 leading-relaxed">
-          Chaque scan déclenche une alerte avec la géolocalisation du lieu, vous assurant une <strong class="text-rose-900">tranquillité d'esprit sans compromis</strong>.
+        <p class="text-rose-800 mb-6 leading-relaxed text-sm sm:text-base">
+          Chaque scan déclenche une alerte avec géolocalisation, pour une <strong class="text-rose-900">tranquillité d'esprit</strong>.
         </p>
-        
-        <!-- Statistiques -->
-        <div class="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-rose-200">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-rose-200">
           <div class="text-center">
-            <div class="text-2xl font-bold text-rose-700">24/7</div>
+            <div class="text-xl sm:text-2xl font-bold text-rose-700">24/7</div>
             <div class="text-sm text-rose-600">Surveillance</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-rose-700">GPS</div>
+            <div class="text-xl sm:text-2xl font-bold text-rose-700">GPS</div>
             <div class="text-sm text-rose-600">Précision</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-rose-700">0s</div>
+            <div class="text-xl sm:text-2xl font-bold text-rose-700">0s</div>
             <div class="text-sm text-rose-600">Délai d'alerte</div>
           </div>
         </div>
       </div>
-      
-      <!-- Boutons d'accès -->
+
+      <!-- Boutons et formulaire UUID -->
       <div class="space-y-6">
-        <!-- Admin et Inscription -->
-        <div class="space-x-4">
-          <a href="/login" class="inline-block btn-modern text-white font-semibold py-4 px-8 rounded-xl transition duration-300">
-            🔐 Accès Administration
-          </a>
-          <a href="/register" class="inline-block btn-modern text-white font-semibold py-4 px-8 rounded-xl transition duration-300">
-            📝 S'inscrire et Obtenir un QR Code
-          </a>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="/login" class="btn-modern text-white font-semibold py-4 px-6 rounded-xl">🔐 Accès Administration</a>
+          <a href="/register" class="btn-modern text-white font-semibold py-4 px-6 rounded-xl">📝 S'inscrire</a>
         </div>
-        <!-- Accès utilisateur aux infos et QR code -->
         <div class="bg-white/20 backdrop-blur-sm rounded-3xl p-6 border border-white/30">
           <h3 class="text-xl font-semibold text-rose-900 mb-4">Accéder à vos informations</h3>
-          <p class="text-rose-700 mb-4">Entrez votre identifiant unique (UUID) pour voir ou modifier votre profil et votre QR code.</p>
+          <p class="text-rose-700 mb-4 text-sm">Entrez votre UUID pour voir/modifier votre profil QR.</p>
           <form action="/fiche" method="GET" class="flex flex-col sm:flex-row gap-4 justify-center">
-            <input type="text" name="uuid" placeholder="Entrez votre UUID" required class="px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <input type="text" name="uuid" placeholder="Entrez votre UUID" required class="w-full sm:w-auto px-4 py-2 rounded-lg border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500">
             <button type="submit" class="btn-modern text-white font-semibold py-2 px-6 rounded-xl">Voir Profil</button>
           </form>
-          <p class="text-rose-600 mt-3 text-sm">
-            Vous avez reçu votre UUID après inscription. Contactez l'administrateur si perdu.
-          </p>
+          <p class="text-rose-600 mt-3 text-xs sm:text-sm">Vous avez reçu votre UUID après inscription.</p>
         </div>
       </div>
     </div>
   </section>
 
   <script>
-    // Masquer le spinner avec animation fluide
+    // Spinner
     window.addEventListener("load", () => {
       const spinner = document.getElementById("spinner");
       if (spinner) {
         setTimeout(() => {
           spinner.style.opacity = '0';
           spinner.style.transition = 'opacity 0.5s ease-out';
-          setTimeout(() => {
-            spinner.style.display = "none";
-          }, 500);
+          setTimeout(() => spinner.style.display = "none", 500);
         }, 1000);
       }
     });
-    
-    // Animation au scroll
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-    
+
+    // Scroll animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('fade-in');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('fade-in');
       });
-    }, observerOptions);
-    
-    document.querySelectorAll('.feature-card').forEach(card => {
-      observer.observe(card);
-    });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card').forEach(card => observer.observe(card));
   </script>
 </body>
 </html>
