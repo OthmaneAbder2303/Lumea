@@ -56,14 +56,26 @@
     .overlay.active {
       display: block;
     }
-    /* Sidebar mobile slide-in */
+    
+    /* Mobile-first responsive design */
+    .mobile-header {
+      display: flex;
+    }
+    .desktop-sidebar {
+      display: none;
+    }
+    .main-content {
+      padding-top: 80px;
+    }
+    
+    /* Mobile menu */
     #mobile-menu {
       position: fixed;
       top: 0;
       left: 0;
       height: 100vh;
-      width: 250px;
-      max-width: 80vw;
+      width: 280px;
+      max-width: 85vw;
       transform: translateX(-100%);
       transition: transform 0.3s ease;
       z-index: 50;
@@ -72,24 +84,135 @@
     #mobile-menu.active {
       transform: translateX(0);
     }
-    /* Adjust iframe height */
-    iframe {
-      height: calc(100vh - 64px); /* header height */
+    
+    /* Bottom navigation for mobile */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e5e5e5;
+      z-index: 30;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .bottom-nav a {
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 10px;
+      transition: color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .bottom-nav a:hover {
+      color: #be123c;
+    }
+    .bottom-nav .nav-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+    
+    /* Tablet and desktop styles */
+    @media (min-width: 768px) {
+      .mobile-header {
+        display: none !important;
+      }
+      .desktop-sidebar {
+        display: flex !important;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 256px;
+      }
+      .main-content {
+        margin-left: 256px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+      .bottom-nav {
+        display: none !important;
+      }
+      body {
+        overflow-x: hidden;
+      }
+    }
+    
+    /* Mobile content padding */
+    @media (max-width: 767px) {
+      .main-content {
+        padding-bottom: 70px;
+      }
+      .desktop-sidebar {
+        display: none !important;
+      }
+    }
+    
+    /* Iframe responsive */
+    .iframe-container {
+      position: relative;
+      width: 100%;
+    }
+    .iframe-container iframe {
+      width: 100%;
+      height: calc(100vh - 160px);
+      border: 0;
+      border-radius: 8px;
+    }
+    
+    @media (min-width: 768px) {
+      .iframe-container iframe {
+        height: calc(100vh - 80px);
+      }
     }
   </style>
 </head>
 <body class="min-h-screen bg-pink-50 flex flex-col">
-  <!-- Header mobile -->
-  <header class="bg-white shadow p-4 flex justify-between items-center md:hidden fixed top-0 left-0 right-0 z-30">
-    <div class="text-xl font-bold text-rose-600">Lumea</div>
-    <button id="menu-toggle" aria-label="Toggle menu" class="text-rose-600 focus:outline-none text-3xl leading-none select-none">☰</button>
+  <!-- Mobile Header -->
+  <header class="mobile-header bg-white shadow p-4 justify-between items-center fixed top-0 left-0 right-0 z-30">
+    <div class="flex items-center space-x-3">
+      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="w-40 h-35 rounded-full">
+      <div>
+        <div class="text-lg font-bold text-rose-600">Lumea</div>
+        <div class="text-xs text-gray-500">Administration</div>
+      </div>
+    </div>
+    <button id="menu-toggle" aria-label="Toggle menu" class="text-rose-600 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
   </header>
 
   <!-- Overlay -->
-  <div id="overlay" class="overlay md:hidden"></div>
+  <div id="overlay" class="overlay"></div>
 
-  <!-- Sidebar -->
-  <aside id="mobile-menu" class="sidebar-gradient md:relative md:translate-x-0 md:flex md:flex-col md:w-64 p-6 hidden md:block">
+  <!-- Desktop Sidebar -->
+  <aside class="desktop-sidebar sidebar-gradient flex-col w-64 p-6">
+    <div class="text-center mb-8">
+      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="mx-auto w-40 h-35 rounded-full mb-3">
+      <h1 class="logo-text text-3xl font-bold">Lumea</h1>
+      <span class="admin-badge inline-block px-3 py-1 rounded-full text-xs mt-2">Administration</span>
+    </div>
+    <nav class="flex flex-col space-y-3">
+      <a href="{{ url_for('ajouter') }}" target="content" class="nav-item px-4 py-3 rounded text-white font-semibold">➕ Ajouter une personne</a>
+      <a href="{{ url_for('alertes') }}" target="content" class="nav-item px-4 py-3 rounded text-white font-semibold">🔔 Voir les alertes</a>
+      <a href="{{ url_for('liste_personnes') }}" target="content" class="nav-item px-4 py-3 rounded text-white font-semibold">📋 Liste des personnes</a>
+    </nav>
+    <div class="mt-auto pt-6">
+      <a href="{{ url_for('logout') }}" class="logout-btn block w-full text-center px-4 py-3 rounded font-semibold text-white">🔓 Déconnexion</a>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar -->
+  <aside id="mobile-menu" class="sidebar-gradient p-6">
     <div class="text-center mb-8">
       <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="mx-auto w-24 h-24 rounded-full mb-3">
       <h1 class="logo-text text-3xl font-bold">Lumea</h1>
@@ -105,30 +228,53 @@
     </div>
   </aside>
 
-  <!-- Main content -->
-  <main class="flex-1 pt-16 md:pt-0 md:ml-64 p-4">
-    <header class="top-bar bg-white shadow rounded-lg p-6 mb-4 flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
-        <p class="text-gray-600 mt-1">Gestion des codes QR et surveillance</p>
-      </div>
-      <div class="flex items-center space-x-4">
-        <div class="text-right">
-          <div class="text-sm font-medium text-gray-800">Administrateur</div>
-          <div class="text-xs text-gray-600">En ligne</div>
+  <!-- Main Content -->
+  <main class="main-content flex-1 p-4">
+    <header class="top-bar bg-white shadow rounded-lg p-4 md:p-6 mb-4">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+        <div class="mb-4 md:mb-0">
+          <h1 class="text-xl md:text-2xl font-bold text-gray-800">Tableau de bord</h1>
+          <p class="text-gray-600 mt-1 text-sm md:text-base">Gestion des codes QR et surveillance</p>
         </div>
-        <div class="w-10 h-10 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
-            <path d="M21 9V7L15 4V6C15 7.1 14.1 8 13 8S11 7.1 11 6V4L5 7V9C5 10.1 5.9 11 7 11S9 10.1 9 9V15L10.5 17L12 15V9C12 10.1 12.9 11 14 11S16 10.1 16 9V15L17.5 17L19 15V9C19 10.1 19.9 11 21 11V9Z"/>
-          </svg>
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <div class="text-sm font-medium text-gray-800">Administrateur</div>
+            <div class="text-xs text-gray-600">En ligne</div>
+          </div>
+          <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+              <path d="M21 9V7L15 4V6C15 7.1 14.1 8 13 8S11 7.1 11 6V4L5 7V9C5 10.1 5.9 11 7 11S9 10.1 9 9V15L10.5 17L12 15V9C12 10.1 12.9 11 14 11S16 10.1 16 9V15L17.5 17L19 15V9C19 10.1 19.9 11 21 11V9Z"/>
+            </svg>
+          </div>
         </div>
       </div>
     </header>
+    
     <section class="iframe-container bg-white shadow rounded-lg overflow-hidden">
       <iframe name="content" src="{{ url_for('ajouter') }}" class="w-full border-0 rounded-lg"></iframe>
     </section>
   </main>
+
+  <!-- Bottom Navigation for Mobile -->
+  <nav class="bottom-nav">
+    <a href="{{ url_for('ajouter') }}" target="content">
+      <div class="nav-icon">➕</div>
+      <div>Ajouter</div>
+    </a>
+    <a href="{{ url_for('alertes') }}" target="content">
+      <div class="nav-icon">🔔</div>
+      <div>Alertes</div>
+    </a>
+    <a href="{{ url_for('liste_personnes') }}" target="content">
+      <div class="nav-icon">📋</div>
+      <div>Liste</div>
+    </a>
+    <a href="{{ url_for('logout') }}">
+      <div class="nav-icon">🔓</div>
+      <div>Sortir</div>
+    </a>
+  </nav>
 
   <script>
     const menuToggle = document.getElementById('menu-toggle');
@@ -139,6 +285,7 @@
       mobileMenu.classList.remove('active');
       overlay.classList.remove('active');
     }
+    
     function openMenu() {
       mobileMenu.classList.add('active');
       overlay.classList.add('active');
@@ -154,7 +301,13 @@
 
     overlay.addEventListener('click', closeMenu);
 
-    // Optional: close menu on resizing to desktop
+    // Close menu when clicking on navigation links on mobile
+    const mobileNavLinks = document.querySelectorAll('#mobile-menu a');
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close menu on resizing to desktop
     window.addEventListener('resize', () => {
       if(window.innerWidth >= 768) {
         closeMenu();
