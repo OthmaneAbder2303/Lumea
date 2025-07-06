@@ -159,40 +159,122 @@
         transform: translateY(0);
       }
     }
+
+    .section-title {
+      position: relative;
+      display: inline-block;
+      font-size: 2.25rem; /* text-3xl */
+      font-weight: 700;
+      text-align: center;
+      background: linear-gradient(135deg, #be185d, #ec4899, #f9a8d4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      animation: shine 4s linear infinite;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #f9a8d4, #ec4899, #be185d);
+      border-radius: 9999px;
+      animation: pulse-bar 2s infinite ease-in-out;
+    }
+
+    @keyframes shine {
+      0% { background-position: 0%; }
+      100% { background-position: 200%; }
+    }
+
+    @keyframes pulse-bar {
+      0%, 100% { transform: scaleX(1); opacity: 1; }
+      50% { transform: scaleX(1.5); opacity: 0.7; }
+    }
+
+
+    .divider {
+      height: 1px;
+      background-color: #fbcfe8;
+      margin: 3rem 0;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-up {
+      animation: fadeUp 1.2s ease-out forwards;
+    }
+
+    .delay-200 {
+      animation-delay: 0.2s;
+    }
+    .delay-300 {
+      animation-delay: 0.3s;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    .fade-in-delay {
+      animation-delay: 0.3s;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+
   </style>
 </head>
 <body class="bg-rose-50 flex flex-col min-h-screen">
 
-  <!-- Navbar -->
-  <nav class="fixed w-full z-50 bg-white/20 backdrop-blur-lg border-b border-white/30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <!-- Logo -->
-        <div class="flex items-center">
-          <span class="text-xl font-bold text-white">Lumea</span>
-          <span class="ml-2 text-sm text-white/70">QR Generator</span>
-        </div>
-        <!-- Hamburger on mobile -->
-        <button id="nav-toggle" class="lg:hidden text-white focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-            viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round"
-            d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-        <!-- Links desktop -->
-        <div id="nav-menu" class="hidden lg:flex space-x-4">
-          <a href="#" class="text-white/80 hover:text-white transition">Accueil</a>
-          <a href="#" class="text-white/80 hover:text-white transition">À propos</a>
-          <a href="/login"
-             class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg transition font-medium">
-            Accès Admin
-          </a>
-          <a href="/register"
-             class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg transition font-medium">
-            S'inscrire
-          </a>
-        </div>
+  <nav id="navbar" class="fixed w-full z-50 bg-white/20 backdrop-blur-lg border-b border-white/30 transition-colors duration-500">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <span id="logo-main" class="text-xl font-bold text-white transition-colors duration-500">Lumea</span>
+        <span id="logo-sub" class="ml-2 text-sm text-white/70 transition-colors duration-500">QR Generator</span>
+      </div>
+      <!-- Hamburger on mobile -->
+      <button id="nav-toggle" class="lg:hidden text-white focus:outline-none transition-colors duration-500">
+        <!-- svg hamburger -->
+      </button>
+      <!-- Links desktop -->
+      <div id="nav-menu" class="hidden lg:flex space-x-4">
+        <a href="/" class="inline-block btn-modern text-white text-lg font-medium px-5 py-1 rounded-xl transition-colors duration-500">Accueil</a>
+        <a href="/" class="inline-block btn-modern text-white text-lg font-medium px-5 py-1 rounded-xl transition-colors duration-500">À propos</a>
+        <a href="/login" class="inline-block btn-modern text-white text-lg font-medium px-5 py-1 rounded-xl transition-colors duration-500">Admin</a>
+        <a href="/register" class="inline-block btn-modern text-white text-lg font-medium px-5 py-1 rounded-xl transition-colors duration-500">S'inscrire</a>
       </div>
     </div>
+  </div>
+  <!-- Drawer mobile -->
+  <div id="nav-mobile" class="lg:hidden bg-white/90 backdrop-blur-md border-t border-white/30 hidden">
+    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-rose-100">Accueil</a>
+    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-rose-100">À propos</a>
+    <a href="/login" class="block px-4 py-2 text-gray-800 hover:bg-rose-100">Accès Admin</a>
+    <a href="/register" class="block px-4 py-2 text-gray-800 hover:bg-rose-100">S'inscrire</a>
+  </div>
+</nav>
+
     <!-- Drawer mobile -->
     <div id="nav-mobile" class="lg:hidden bg-white/90 backdrop-blur-md border-t border-white/30 hidden">
       <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-rose-100">Accueil</a>
@@ -218,82 +300,103 @@
     </div>
   </div>
 
-  <!-- Section 1 -->
-  <section class="section-one">
-    <video autoplay loop muted class="video-background">
-      <source src="static/videos/lumeavd.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <div class="text-center z-20 px-4 sm:px-6 mt-24">
-      <h1 class="title-glow text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 fade-in">
-        Bienvenue sur <span class="bg-gradient-to-r from-pink-300 to-rose-200 bg-clip-text text-transparent">Lumea</span>
-      </h1>
-      <p class="text-white/90 text-base sm:text-lg md:text-xl font-light max-w-2xl mx-auto fade-in fade-in-delay">
-        Générateur de codes QR pour la sécurité connectée
-      </p>
-    </div>
-  </section>
+ <!-- Section 1 -->
+<section class="section-one relative">
+  <!-- Vidéo de fond -->
+  <video autoplay loop muted playsinline class="video-background">
+    <source src="static/videos/lumeavd.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Overlay sombre pour lisibilité -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60 z-10"></div>
+
+  <!-- Contenu principal -->
+  <div class="relative z-20 text-center px-6 py-32 sm:py-40 lg:py-48 fade-in">
+    <h1 class="title-glow text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 animate-fade-up">
+      Bienvenue sur
+      <span class="bg-gradient-to-r from-pink-300 to-rose-200 bg-clip-text text-transparent">Lumea</span>
+    </h1>
+    <p class="text-white/90 text-lg sm:text-xl md:text-2xl font-light max-w-3xl mx-auto mb-8 animate-fade-up delay-200">
+      Le générateur de codes QR pour une sécurité connectée en temps réel.
+    </p>
+    <a href="/register" class="inline-block btn-modern text-white text-lg font-medium px-8 py-3 rounded-xl animate-fade-up delay-300">
+      Commencer maintenant
+    </a>
+  </div>
+</section>
+
 
   <!-- Section 2 -->
   <section class="section-two relative z-10">
     <div class="text-center px-4 sm:px-6 max-w-6xl mx-auto">
+
+      <!-- Titre fonctionnalités -->
+      <h2 class="section-title">Fonctionnalités</h2>
+
       <!-- Feature Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
-        <!-- Carte 1 -->
-        <div class="feature-card rounded-2xl p-6 text-center">
-          <div class="qr-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 14v1m8-8h-1M4 12H3..."/>
-            </svg>
-          </div>
-          <h3 class="font-semibold text-rose-900 mb-2">Génération QR</h3>
-          <p class="text-rose-700 text-sm">Codes QR personnalisés pour chaque bracelet</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-10">
+        <!-- Génération QR -->
+        <div class="feature-card rounded-3xl p-6 text-center shadow-lg transition-transform transform hover:scale-105 fade-in">
+          <img src="{{ url_for('static', filename='images/qr-code.png') }}" alt="QR Code"
+              class="w-16 h-16 mx-auto mb-4 drop-shadow-lg">
+          <h3 class="text-xl font-bold text-rose-900 mb-2">Génération QR</h3>
+          <p class="text-rose-700 text-sm">Création de codes QR uniques pour chaque bracelet connecté.</p>
         </div>
-        <!-- Carte 2 -->
-        <div class="feature-card rounded-2xl p-6 text-center">
-          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="..."/>
-            </svg>
-          </div>
-          <h3 class="font-semibold text-rose-900 mb-2">Géolocalisation</h3>
-          <p class="text-rose-700 text-sm">Localisation précise en temps réel</p>
+
+        <!-- Géolocalisation -->
+        <div class="feature-card rounded-3xl p-6 text-center shadow-lg transition-transform transform hover:scale-105 fade-in fade-in-delay">
+          <img src="{{ url_for('static', filename='images/gps.png') }}" alt="GPS"
+              class="w-16 h-16 mx-auto mb-4 drop-shadow-lg">
+          <h3 class="text-xl font-bold text-rose-900 mb-2">Géolocalisation</h3>
+          <p class="text-rose-700 text-sm">Suivi de position en temps réel avec précision intégrée.</p>
         </div>
-        <!-- Carte 3 -->
-        <div class="feature-card rounded-2xl p-6 text-center">
-          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="..."/>
-            </svg>
-          </div>
-          <h3 class="font-semibold text-rose-900 mb-2">Alertes Instant</h3>
-          <p class="text-rose-700 text-sm">Notifications immédiates à chaque scan</p>
+
+        <!-- Alertes Instantanées -->
+        <div class="feature-card rounded-3xl p-6 text-center shadow-lg transition-transform transform hover:scale-105 fade-in fade-in-delay">
+          <img src="{{ url_for('static', filename='images/warning.png') }}" alt="Alerte"
+              class="w-16 h-16 mx-auto mb-4 drop-shadow-lg">
+          <h3 class="text-xl font-bold text-rose-900 mb-2">Alertes Instant</h3>
+          <p class="text-rose-700 text-sm">Notifications immédiates dès qu’un scan est détecté.</p>
         </div>
       </div>
 
-      <!-- Description principale -->
-      <div class="bg-white/20 backdrop-blur-sm rounded-3xl p-6 sm:p-8 mb-8 border border-white/30">
-        <p class="text-base sm:text-lg text-rose-900 mb-4 leading-relaxed">
-          <strong>Lumea</strong> est une solution de sécurité innovante pour localiser vos proches en temps réel grâce à un <em>bracelet QR code</em>.
+      <!-- Titre description -->
+      <h2 class="section-title">Pourquoi choisir Lumea ?</h2>
+
+      <!-- Description principale améliorée -->
+      <div class="relative bg-white/30 backdrop-blur-lg rounded-3xl p-6 sm:p-10 mb-12 border border-white/50 shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-[1.01]">
+
+        <p class="text-base sm:text-lg text-gray-800 mb-4 leading-relaxed fade-in">
+          <strong class="text-rose-700">Lumea</strong> révolutionne la sécurité de vos proches grâce à un <em class="text-rose-600">bracelet intelligent avec QR code</em> personnalisé, accessible à tout moment.
         </p>
-        <p class="text-rose-800 mb-6 leading-relaxed text-sm sm:text-base">
-          Chaque scan déclenche une alerte avec géolocalisation, pour une <strong class="text-rose-900">tranquillité d'esprit</strong>.
+
+        <p class="text-sm sm:text-base text-gray-700 mb-8 fade-in fade-in-delay">
+          Chaque scan déclenche une <span class="font-semibold text-rose-800">alerte instantanée</span> accompagnée d’une <span class="text-rose-600">géolocalisation précise</span>, assurant une <strong class="text-rose-900">protection continue</strong>.
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-rose-200">
-          <div class="text-center">
-            <div class="text-xl sm:text-2xl font-bold text-rose-700">24/7</div>
-            <div class="text-sm text-rose-600">Surveillance</div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-rose-200 fade-in fade-in-delay">
+          <div class="text-center transition duration-300 transform hover:scale-105">
+            <div class="text-2xl font-extrabold text-rose-700">📡 24/7</div>
+            <div class="text-sm text-rose-600 mt-1">Surveillance active</div>
           </div>
-          <div class="text-center">
-            <div class="text-xl sm:text-2xl font-bold text-rose-700">GPS</div>
-            <div class="text-sm text-rose-600">Précision</div>
+          <div class="text-center transition duration-300 transform hover:scale-105">
+            <div class="text-2xl font-extrabold text-rose-700">📍 GPS</div>
+            <div class="text-sm text-rose-600 mt-1">Localisation précise</div>
           </div>
-          <div class="text-center">
-            <div class="text-xl sm:text-2xl font-bold text-rose-700">0s</div>
-            <div class="text-sm text-rose-600">Délai d'alerte</div>
+          <div class="text-center transition duration-300 transform hover:scale-105">
+            <div class="text-2xl font-extrabold text-rose-700">⚡ 0s</div>
+            <div class="text-sm text-rose-600 mt-1">Délai d’alerte</div>
           </div>
         </div>
       </div>
+
+
+      <!-- Séparation -->
+      <div class="divider"></div>
+
+      <!-- Titre accès rapide -->
+      <h2 class="section-title">Commencer maintenant</h2>
 
       <!-- Boutons et formulaire UUID -->
       <div class="space-y-6">
@@ -313,6 +416,33 @@
       </div>
     </div>
   </section>
+
+  <!-- Footer -->
+  <footer class="mt-20 bg-gradient-to-br from-rose-100 to-pink-200 text-rose-800 py-6 border-t border-rose-300">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center">
+      <p class="text-sm mb-4 sm:mb-0">© 2025 Lumea. Tous droits réservés.</p>
+      <div class="flex space-x-6 items-center text-rose-600 text-sm">
+        <!-- Gmail -->
+        <a href="mailto:tonemail@gmail.com" class="flex items-center space-x-1 transition-colors hover:text-pink-600 hover:scale-110 transform duration-300 ease-in-out" aria-label="Envoyer un email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2 4a2 2 0 012-2h16a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm2 0v2.51l7.242 4.622a1 1 0 001.516 0L20 6.51V4H4zm0 4.47V20h16v-11.53l-6.773 4.325a3 3 0 01-3.454 0L4 8.47z"/>
+          </svg>
+          <span>lumea@gmail.com</span>
+        </a>
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/__lumea__/" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-1 transition-colors hover:text-pink-600 hover:scale-110 transform duration-300 ease-in-out" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm0 1.5A4.25 4.25 0 003.5 7.75v8.5A4.25 4.25 0 007.75 20.5h8.5a4.25 4.25 0 004.25-4.25v-8.5A4.25 4.25 0 0016.25 3.5h-8.5zm4.25 3a4.75 4.75 0 110 9.5 4.75 4.75 0 010-9.5zm0 1.5a3.25 3.25 0 100 6.5 3.25 3.25 0 000-6.5zm4.75-.88a1.125 1.125 0 110 2.25 1.125 1.125 0 010-2.25z"/>
+          </svg>
+          <span>@__lumea__</span>
+        </a>
+
+      </div>
+    </div>
+  </footer>
+
+
+
 
   <script>
     // Spinner
@@ -335,6 +465,38 @@
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.feature-card').forEach(card => observer.observe(card));
+
+
+    const navbar = document.getElementById('navbar');
+  const logoMain = document.getElementById('logo-main');
+  const logoSub = document.getElementById('logo-sub');
+  const navToggle = document.getElementById('nav-toggle');
+  const navMenuLinks = document.querySelectorAll('#nav-menu a');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      // Fond plus opaque
+      navbar.classList.replace('bg-white/20', 'bg-white/90');
+      // Texte foncé
+      logoMain.classList.replace('text-white', 'text-rose-900');
+      logoSub.classList.replace('text-white/70', 'text-rose-700');
+      navToggle.classList.replace('text-white', 'text-rose-900');
+      navMenuLinks.forEach(link => {
+        link.classList.replace('text-white', 'text-rose-900');
+      });
+    } else {
+      // Fond translucide
+      navbar.classList.replace('bg-white/90', 'bg-white/20');
+      // Texte blanc
+      logoMain.classList.replace('text-rose-900', 'text-white');
+      logoSub.classList.replace('text-rose-700', 'text-white/70');
+      navToggle.classList.replace('text-rose-900', 'text-white');
+      navMenuLinks.forEach(link => {
+        link.classList.replace('text-rose-900', 'text-white');
+      });
+    }
+  });
+
   </script>
 </body>
 </html>

@@ -209,6 +209,20 @@
         min-height: calc(100vh - 80px);
       }
     }
+    @media (max-width: 767px) {
+      .main-content {
+        padding-bottom: 70px;
+      }
+      .desktop-sidebar {
+        display: none;
+      }
+
+      /* Fix hauteur iframe sur mobile */
+      .iframe-container iframe {
+        min-height: 500px;
+      }
+    }
+
   </style>
 </head>
 <body class="min-h-screen bg-pink-50 flex flex-col">
