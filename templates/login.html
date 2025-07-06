@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Connexion Admin - Lumea</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Page de connexion sécurisée pour les administrateurs de Lumea QR Generator.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
     * {
       font-family: 'Poppins', sans-serif;
     }
@@ -14,7 +16,12 @@
     body {
       background: linear-gradient(135deg, #fdf2f8, #fce7f3);
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     
     body::before {
@@ -40,6 +47,9 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       box-shadow: 0 25px 45px rgba(225, 29, 72, 0.1);
       animation: slideIn 0.8s ease-out;
+      width: 100%;
+      max-width: 28rem; /* équivalent à max-w-md */
+      margin: 1rem;
     }
     
     @keyframes slideIn {
@@ -121,46 +131,150 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
+
+    /* Mobile-first responsive styles */
+    .nav-glass {
+      padding: 0 1rem;
+    }
+    
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      width: 75vw;
+      max-width: 20rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+      z-index: 50;
+    }
+    
+    .mobile-menu.active {
+      display: block;
+      transform: translateX(0);
+    }
+    
+    .overlay {
+      background: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      .login-card {
+        padding: 1.5rem;
+        margin: 0.5rem;
+      }
+      .login-card h2 {
+        font-size: 1.5rem;
+      }
+      .login-card p {
+        font-size: 0.875rem;
+      }
+      .input-modern {
+        padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+        font-size: 0.875rem;
+      }
+      .btn-login {
+        padding: 0.75rem;
+        font-size: 1rem;
+      }
+      .feature-icon {
+        width: 4rem;
+        height: 4rem;
+      }
+      .feature-icon svg {
+        width: 2rem;
+        height: 2rem;
+      }
+      .nav-glass .desktop-menu {
+        display: none;
+      }
+      .nav-glass .hamburger {
+        display: block;
+      }
+    }
+
+    @media (min-width: 641px) {
+      .nav-glass .hamburger {
+        display: none;
+      }
+      .mobile-menu {
+        display: none !important;
+      }
+    }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
-
+<body>
   <!-- Barre de navigation -->
   <nav class="fixed top-0 left-0 right-0 z-50 nav-glass">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         <!-- Logo -->
         <div class="flex items-center">
-          <h2 class="text-xl font-bold text-rose-700">Lumea</h2>
-          <span class="ml-2 text-sm text-rose-600">QR Generator</span>
+          <h2 class="text-xl font-bold text-rose-700 sm:text-2xl">Lumea</h2>
+          <span class="ml-2 text-sm text-rose-600 hidden sm:inline">QR Generator</span>
         </div>
         
         <!-- Menu -->
-        <div class="flex items-center space-x-4">
-          <a href="/" class="text-rose-600 hover:text-rose-700 transition duration-200">← Retour Accueil</a>
-          <a href="#" class="text-rose-600/80 hover:text-rose-700 transition duration-200">Support</a>
+        <div class="desktop-menu flex items-center space-x-4">
+          <a href="/" class="text-rose-600 hover:text-rose-700 transition duration-200 text-sm sm:text-base">← Retour Accueil</a>
+          <a href="#" class="text-rose-600/80 hover:text-rose-700 transition duration-200 text-sm sm:text-base">Support</a>
         </div>
+        
+        <!-- Hamburger pour mobile -->
+        <button id="menu-toggle" aria-label="Toggle menu" class="hamburger text-rose-600 focus:outline-none transition-transform duration-300 hover:rotate-90">
+          <svg class="w-6 h-6" fill = "none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- Forme de connexion -->
-  <div class="login-card rounded-3xl p-8 w-full max-w-md mx-4 relative z-10">
-    
+  <!-- Menu mobile -->
+  <div id="mobile-menu" class="mobile-menu">
+    <div class="flex flex-col items-center p-6 space-y-4">
+      <a href="/" class="text-rose-600 hover:text-rose-700 transition duration-200 text-base">← Retour Accueil</a>
+      <a href="#" class="text-rose-600/80 hover:text-rose-700 transition duration-200 text-base">Support</a>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="overlay"></div>
+
+  <!-- Formulaire de connexion -->
+  <div class="login-card rounded-3xl p-6 sm:p-8 relative z-10">
     <!-- En-tête avec icône -->
-    <div class="text-center mb-8">
-      <div class="feature-icon w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="text-center mb-6 sm:mb-8">
+      <div class="feature-icon w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
         </svg>
       </div>
-      <h2 class="text-3xl font-bold text-rose-700 title-glow">Connexion Admin</h2>
-      <p class="text-rose-600 mt-2">Accès sécurisé à l'interface Lumea</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-rose-700 title-glow">Connexion Admin</h2>
+      <p class="text-rose-600 mt-2 text-sm sm:text-base">Accès sécurisé à l'interface Lumea</p>
     </div>
     
     <!-- Formulaire -->
-    <form method="post" class="space-y-6">
-      
+    <form method="post" class="space-y-4 sm:space-y-6">
       <!-- Champ nom d'utilisateur -->
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -169,7 +283,7 @@
           </svg>
         </div>
         <input type="text" name="username" placeholder="Nom d'utilisateur" required
-          class="input-modern w-full pl-10 pr-4 py-3 rounded-xl text-rose-900 placeholder-rose-400" />
+          class="input-modern w-full pl-10 pr-4 py-2 sm:py-3 rounded-xl text-rose-900 placeholder-rose-400 text-sm sm:text-base" />
       </div>
       
       <!-- Champ mot de passe -->
@@ -180,11 +294,11 @@
           </svg>
         </div>
         <input type="password" name="password" placeholder="Mot de passe" required
-          class="input-modern w-full pl-10 pr-4 py-3 rounded-xl text-rose-900 placeholder-rose-400" />
+          class="input-modern w-full pl-10 pr-4 py-2 sm:py-3 rounded-xl text-rose-900 placeholder-rose-400 text-sm sm:text-base" />
       </div>
       
       <!-- Option se souvenir -->
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
         <label class="flex items-center">
           <input type="checkbox" class="rounded border-rose-300 text-rose-600 focus:ring-rose-500">
           <span class="ml-2 text-sm text-rose-600">Se souvenir de moi</span>
@@ -195,16 +309,14 @@
       </div>
       
       <!-- Bouton de connexion -->
-      <button type="submit" class="btn-login w-full text-white py-4 rounded-xl font-semibold text-lg transition duration-300">
+      <button type="submit" class="btn-login w-full text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition duration-300">
         🔐 Se connecter
       </button>
     </form>
     
     <!-- Footer -->
-    <div class="mt-8 text-center">
-      <p class="text-rose-500 text-sm">
-        Accès réservé aux administrateurs autorisés
-      </p>
+    <div class="mt-6 sm:mt-8 text-center">
+      <p class="text-rose-500 text-sm">Accès réservé aux administrateurs autorisés</p>
       <div class="flex justify-center space-x-4 mt-4">
         <div class="w-2 h-2 bg-rose-400 rounded-full animate-pulse"></div>
         <div class="w-2 h-2 bg-rose-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
@@ -213,5 +325,47 @@
     </div>
   </div>
 
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const overlay = document.getElementById('overlay');
+
+    if (menuToggle && mobileMenu && overlay) {
+      function closeMenu() {
+        mobileMenu.classList.remove('active');
+        overlay.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+      
+      function openMenu() {
+        mobileMenu.classList.add('active');
+        overlay.classList.add('active');
+        menuToggle.setAttribute('aria-expanded', 'true');
+      }
+
+      menuToggle.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('active')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      overlay.addEventListener('click', closeMenu);
+
+      // Close menu when clicking on navigation links
+      const mobileNavLinks = document.querySelectorAll('#mobile-menu a');
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close menu on resize to desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 641) {
+          closeMenu();
+        }
+      });
+    }
+  </script>
 </body>
 </html>

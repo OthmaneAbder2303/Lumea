@@ -1,30 +1,38 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard Admin - Lumea</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Tableau de bord d'administration pour la gestion des codes QR et la surveillance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
     * {
       font-family: 'Poppins', sans-serif;
     }
     .sidebar-gradient {
       background: linear-gradient(135deg, #be123c 0%, #9f1239 50%, #881337 100%);
       color: white;
+      transition: all 0.3s ease-in-out;
     }
     .logo-text {
       background: linear-gradient(135deg, #ffffff, #fce7f3, #f9a8d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       background-clip: text;
+      color: transparent;
       filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+      transition: filter 0.3s ease;
+    }
+    .logo-text:hover {
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
     }
     .admin-badge {
       background: linear-gradient(135deg, #c03755, #f9a8d4);
       animation: pulse 2s infinite;
       box-shadow: 0 4px 15px rgba(192, 55, 85, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
@@ -33,28 +41,52 @@
     .nav-item {
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.25);
-      transition: background 0.3s ease, border-color 0.3s ease;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
     .nav-item:hover {
       background: rgba(255, 255, 255, 0.3);
       border-color: rgba(255, 255, 255, 0.5);
+      transform: translateX(5px);
+    }
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.4s ease;
+    }
+    .nav-item:hover::before {
+      left: 100%;
     }
     .logout-btn {
       background: linear-gradient(135deg, #b62662, #830a3c);
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
     .logout-btn:hover {
       background: linear-gradient(135deg, #830a3c, #b62662);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
     .overlay {
       background: rgba(0, 0, 0, 0.5);
       position: fixed;
-      inset: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       z-index: 40;
-      display: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
     .overlay.active {
-      display: block;
+      opacity: 1;
+      visibility: visible;
     }
     
     /* Mobile-first responsive design */
@@ -77,7 +109,7 @@
       width: 280px;
       max-width: 85vw;
       transform: translateX(-100%);
-      transition: transform 0.3s ease;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 50;
       overflow-y: auto;
     }
@@ -106,39 +138,43 @@
       color: #6b7280;
       text-decoration: none;
       font-size: 10px;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, transform 0.2s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .bottom-nav a:hover {
       color: #be123c;
+      transform: scale(1.1);
     }
     .bottom-nav .nav-icon {
       font-size: 18px;
       margin-bottom: 2px;
+      transition: transform 0.2s ease;
+    }
+    .bottom-nav a:hover .nav-icon {
+      transform: rotate(10deg);
     }
     
     /* Tablet and desktop styles */
     @media (min-width: 768px) {
-      .mobile-header {
-        display: none !important;
+      .mobile-header, .bottom-nav {
+        display: none;
       }
       .desktop-sidebar {
-        display: flex !important;
+        display: flex;
         position: fixed;
         left: 0;
         top: 0;
         height: 100vh;
         width: 256px;
+        transform: translateX(0);
+        transition: width 0.3s ease;
       }
       .main-content {
         margin-left: 256px;
         padding-top: 1rem;
         padding-bottom: 1rem;
-      }
-      .bottom-nav {
-        display: none !important;
       }
       body {
         overflow-x: hidden;
@@ -151,7 +187,7 @@
         padding-bottom: 70px;
       }
       .desktop-sidebar {
-        display: none !important;
+        display: none;
       }
     }
     
@@ -162,14 +198,15 @@
     }
     .iframe-container iframe {
       width: 100%;
-      height: calc(100vh - 160px);
+      min-height: calc(100vh - 160px);
       border: 0;
       border-radius: 8px;
+      transition: opacity 0.3s ease;
     }
     
     @media (min-width: 768px) {
       .iframe-container iframe {
-        height: calc(100vh - 80px);
+        min-height: calc(100vh - 80px);
       }
     }
   </style>
@@ -178,13 +215,13 @@
   <!-- Mobile Header -->
   <header class="mobile-header bg-white shadow p-4 justify-between items-center fixed top-0 left-0 right-0 z-30">
     <div class="flex items-center space-x-3">
-      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="w-40 h-35 rounded-full">
+      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="w-40 h-35 rounded-full transition-transform duration-300 hover:scale-105">
       <div>
         <div class="text-lg font-bold text-rose-600">Lumea</div>
         <div class="text-xs text-gray-500">Administration</div>
       </div>
     </div>
-    <button id="menu-toggle" aria-label="Toggle menu" class="text-rose-600 focus:outline-none">
+    <button id="menu-toggle" aria-label="Toggle menu" aria-expanded="false" class="text-rose-600 focus:outline-none transition-transform duration-300 hover:rotate-90">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
@@ -197,7 +234,7 @@
   <!-- Desktop Sidebar -->
   <aside class="desktop-sidebar sidebar-gradient flex-col w-64 p-6">
     <div class="text-center mb-8">
-      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="mx-auto w-40 h-35 rounded-full mb-3">
+      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="mx-auto w-40 h-35 rounded-full mb-3 transition-transform duration-300 hover:scale-105">
       <h1 class="logo-text text-3xl font-bold">Lumea</h1>
       <span class="admin-badge inline-block px-3 py-1 rounded-full text-xs mt-2">Administration</span>
     </div>
@@ -214,7 +251,7 @@
   <!-- Mobile Sidebar -->
   <aside id="mobile-menu" class="sidebar-gradient p-6">
     <div class="text-center mb-8">
-      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="mx-auto w-24 h-24 rounded-full mb-3">
+      <img src="{{ url_for('static', filename='images/DesignSansTitre.png') }}" alt="Logo" class="mx-auto w-24 h-24 rounded-full mb-3 transition-transform duration-300 hover:scale-105">
       <h1 class="logo-text text-3xl font-bold">Lumea</h1>
       <span class="admin-badge inline-block px-3 py-1 rounded-full text-xs mt-2">Administration</span>
     </div>
@@ -281,38 +318,42 @@
     const mobileMenu = document.getElementById('mobile-menu');
     const overlay = document.getElementById('overlay');
 
-    function closeMenu() {
-      mobileMenu.classList.remove('active');
-      overlay.classList.remove('active');
-    }
-    
-    function openMenu() {
-      mobileMenu.classList.add('active');
-      overlay.classList.add('active');
-    }
-
-    menuToggle.addEventListener('click', () => {
-      if (mobileMenu.classList.contains('active')) {
-        closeMenu();
-      } else {
-        openMenu();
+    if (menuToggle && mobileMenu && overlay) {
+      function closeMenu() {
+        mobileMenu.classList.remove('active');
+        overlay.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
       }
-    });
-
-    overlay.addEventListener('click', closeMenu);
-
-    // Close menu when clicking on navigation links on mobile
-    const mobileNavLinks = document.querySelectorAll('#mobile-menu a');
-    mobileNavLinks.forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
-
-    // Close menu on resizing to desktop
-    window.addEventListener('resize', () => {
-      if(window.innerWidth >= 768) {
-        closeMenu();
+      
+      function openMenu() {
+        mobileMenu.classList.add('active');
+        overlay.classList.add('active');
+        menuToggle.setAttribute('aria-expanded', 'true');
       }
-    });
+
+      menuToggle.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('active')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      overlay.addEventListener('click', closeMenu);
+
+      // Close menu when clicking on navigation links on mobile
+      const mobileNavLinks = document.querySelectorAll('#mobile-menu a');
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close menu on resizing to desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          closeMenu();
+        }
+      });
+    }
   </script>
 </body>
 </html>
