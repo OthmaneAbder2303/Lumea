@@ -20,6 +20,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 context.load_cert_chain('cert.pem', 'key.pem')
 
+BASE_URL = os.getenv("BASE_URL")
 
 
 # --- Configuration Mail  ---
@@ -392,9 +393,8 @@ def register():
             personne = db.execute("SELECT * FROM persons WHERE uuid = ?", (uid,)).fetchone()
 
             # Generate QR code
-            host_ip = get_local_ip()
-            port = 5000
-            full_url = f"https://{host_ip}:{port}/scan/{uid}"
+            BASE_URL = os.getenv("BASE_URL", "http://localhost:5050")
+            full_url = f"{BASE_URL}/scan/{uid}"
             qr = qrcode.make(full_url)
             qr_path_relative = f"qrcodes/{uid}.png"
             qr.save(os.path.join(app.static_folder, qr_path_relative))
@@ -469,9 +469,8 @@ def update(uuid):
         personne = db.execute("SELECT * FROM persons WHERE uuid = ?", (uuid,)).fetchone()
 
         # Regenerate QR code
-        host_ip = get_local_ip()
-        port = 5000
-        full_url = f"https://{host_ip}:{port}/scan/{uuid}"
+        BASE_URL = os.getenv("BASE_URL", "http://localhost:5050")
+        full_url = f"{BASE_URL}/scan/{uuid}"
         qr = qrcode.make(full_url)
         qr_path_relative = f"qrcodes/{uuid}.png"
         qr.save(os.path.join(app.static_folder, qr_path_relative))
