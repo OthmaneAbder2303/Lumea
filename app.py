@@ -202,7 +202,7 @@ def ajouter():
         """, (uid, nom, infos, contact, canal_alerte, photo_path, pdf_path, lien, texte_libre))
         db.commit()
         
-        BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
+        BASE_URL = os.getenv("BASE_URL", "http://localhost:5050")
         full_url = f"{BASE_URL}/scan/{uid}"
         qr = qrcode.make(full_url)
         qr_path = os.path.join(QR_FOLDER, f"{uid}.png")
