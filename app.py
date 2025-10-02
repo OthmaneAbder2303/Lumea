@@ -202,9 +202,8 @@ def ajouter():
         """, (uid, nom, infos, contact, canal_alerte, photo_path, pdf_path, lien, texte_libre))
         db.commit()
         
-        host_ip = get_local_ip()
-        port = 5000  # A atapter si on changes le port Flask
-        full_url = f"https://{host_ip}:{port}/scan/{uid}"
+        BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
+        full_url = f"{BASE_URL}/scan/{uid}"
         qr = qrcode.make(full_url)
         qr_path = os.path.join(QR_FOLDER, f"{uid}.png")
         qr.save(qr_path)
@@ -485,4 +484,4 @@ def update(uuid):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, ssl_context=context, port=int(os.environ.get("PORT", 5000)))
+    app.run(host="0.0.0.0", debug=True, ssl_context=context, port=int(os.environ.get("PORT", 5050)))
