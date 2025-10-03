@@ -317,6 +317,13 @@ def fiche(uuid=None):
     
     return render_template("user_profile.html", p=personne, uuid=uuid, now=datetime.now())
 
+@app.route("/view/<uuid>", methods=["GET"])
+def view(uuid):
+    db = get_db()
+    personne = db.execute("SELECT * FROM persons WHERE uuid = ?", (uuid,)).fetchone()
+    if not personne:
+        return render_template("error.html", message="Aucun utilisateur trouvé avec cet UUID."), 404
+    return render_template("view_profile.html", p=personne, now=datetime.now())
 
 
 
