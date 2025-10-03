@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fiche de {{ p.nom if p else 'Utilisateur Inconnu' }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+      overflow: auto;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.05) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(-20px, -20px) rotate(120deg); }
+      66% { transform: translate(20px, -10px) rotate(240deg); }
+    }
+
+    .glass-card {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 25px 45px rgba(225, 29, 72, 0.1);
+      animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .title-glow {
+      text-shadow: 0 0 20px rgba(225, 29, 72, 0.3);
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(225, 29, 72, 0.3); }
+      to { text-shadow: 0 0 30px rgba(225, 29, 72, 0.5); }
+    }
+
+    .btn-modern {
+      background: linear-gradient(135deg, #c03755, #801340);
+      box-shadow: 0 8px 25px rgba(225, 29, 72, 0.4);
+      border: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-modern::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn-modern:hover::before {
+      left: 100%;
+    }
+
+    .btn-modern:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 35px rgba(225, 29, 72, 0.6);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center relative z-10">
+
+  <div class="glass-card max-w-4xl mx-4 mt-16 sm:mt-24 p-10 rounded-3xl text-gray-800 relative z-10">
+    <div class="text-center mb-8">
+      <h3 class="text-3xl font-bold text-rose-700 title-glow">Fiche de {{ p.nom if p else 'Utilisateur Inconnu' }}</h3>
+      <p class="text-rose-500 text-lg">Informations du responsable</p>
+    </div>
+
+    {% if p %}
+      <div class="space-y-6 text-lg">
+        {% if p.photo %}
+        <div class="text-center mb-8">
+          <img src="{{ url_for('static', filename=p.photo.split('static/')[1]) }}"
+               alt="Photo"
+               class="w-32 h-32 object-cover rounded-full border-4 border-rose-300 shadow-lg mx-auto" />
+        </div>
+        {% endif %}
+
+        {% if p.infos %}
+        <div>
+          <span class="font-semibold text-rose-600">📝 Infos :</span>
+          <p class="ml-2 text-rose-900">{{ p.infos }}</p>
+        </div>
+        {% endif %}
+
+        {% if p.contact %}
+        <div>
+          <span class="font-semibold text-rose-600">📞 Contact d'Urgence :</span>
+          <p class="ml-2 text-rose-900">{{ p.contact }}</p>
+        </div>
+        {% endif %}
+
+        {% if p.texte_libre %}
+        <div>
+          <span class="font-semibold text-rose-600">💬 Note :</span>
+          <p class="ml-2 text-rose-900">{{ p.texte_libre }}</p>
+        </div>
+        {% endif %}
+
+        {% if p.lien %}
+        <div>
+          <span class="font-semibold text-rose-600">🔗 Lien :</span>
+          <a href="{{ p.lien }}" target="_blank" class="ml-2 text-rose-700 underline">{{ p.lien }}</a>
+        </div>
+        {% endif %}
+
+        {% if p.pdf %}
+        <div class="text-center mt-10">
+          <a href="{{ url_for('static', filename=p.pdf.split('static/')[1]) }}"
+             target="_blank"
+             class="inline-block px-6 py-3 bg-rose-600 text-white rounded-xl hover:bg-rose-700 transition duration-300 shadow-lg">
+            📄 Voir le document PDF
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <p class="text-rose-700 text-center">Aucune information disponible pour cet UUID.</p>
+    {% endif %}
+  </div>
+
+  <footer class="text-center text-sm text-rose-500 py-6">
+    Powered by <span class="text-rose-700 font-semibold">Lumea</span> © {{ now.strftime('%I:%M %p %z on %A, %B %d, %Y') }}
+  </footer>
+
+</body>
+</html>
